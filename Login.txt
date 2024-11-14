@@ -1,2 +1,2 @@
 Username: admin
-Password: dcacc64ae39f40fc
+Password: admindefaultpassword
