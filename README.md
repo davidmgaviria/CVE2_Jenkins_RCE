@@ -8,3 +8,8 @@
     - docker exec -it <container_id> bash
     - cd to directory listeed on the Jenkins page, acquire the password
 - Set up a basic admin account (remember the password) and install default plugins 
+
+
+# Connecting to CLI via SSH
+- open a terminal, run 'ssh jenkins@localhost'
+    - password is jenkins (or whatever you set in your docker compose)
