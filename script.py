@@ -14,7 +14,7 @@ print(command)
 start = b"\x00\x00\x04"
 end = b"\x02\x00\x05\x55\x54\x46\x2d\x38\x01\x00\x05\x65\x6e\x5f\x55\x53"
 
-command_frame = starter + command + ending
+command_frame = start + command + end
 
 ws.send(command_frame, opcode=websocket.ABNF.OPCODE_BINARY)
 
