@@ -24,11 +24,11 @@ def index():
             ws.onopen = function() {
                 console.log("Connected");
 
-                const command = new TextEncoder().encode("who-am-i"); // Convert string to byte array (Uint8Array)
+                const command = new TextEncoder().encode("groovy = < payload.groovy"); // Convert string to byte array (Uint8Array)
                 console.log(command);
 
                 // Define the start and end frames
-                const start = new Uint8Array([0x00, 0x00, 0x08]);
+                const start = new Uint8Array([0x00, 0x00, 0x19]);   // last byte needs to match length of command
                 const end = new Uint8Array([0x02, 0x00, 0x05, 0x55, 0x54, 0x46, 0x2d, 0x38, 0x01, 0x00, 0x05, 0x65, 0x6e, 0x5f, 0x55, 0x53]);
 
                 // Combine the start, command, and end frames into one frame
