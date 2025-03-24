@@ -1,5 +1,6 @@
-# CVE2_Jenkins_RCE
- Repo for CVE S2 Team 1 -- working on a Jenkins exploit
+# Repo Overview: Proof of Concept Exploit for Jenkins 
+ A proof of concept for CVE-2024-23898, a cross-site WebSocket hijacking vulnerability affecting Jenkins versions 2.217-2.441.  
+
 
 # Setting Up Jenkins
 - Run "docker-compose build && docker-compose up -d"
@@ -11,7 +12,6 @@
 -Configure anonymous users with basic permissions by going to Manage Jenkins > Security 
 	- Set authorization type to "Matrix-based"
 	- Allow anonymous users to read "Overall" and "Job"
-
 
 # Conducting Websocket Hijacking
 - Open Firefox, go to Settings > Security & Privacy
