@@ -1,4 +1,4 @@
-# Repo Overview: An Exploit Against the Jenkins CLI
+# Jenkins CLI Websocket Hijacking - A Proof of Concept Exploit
  A proof of concept for CVE-2024-23898, a cross-site WebSocket hijacking vulnerability affecting Jenkins versions 2.217-2.441.  
  This exploits targets the Jenkins CLI that can be used to remotely access and issue commands to a Jenkins control server.  Through this exploit a remote attacker can gain access to and establish a persistent back-door to a Jenkins control server if an administrator is tricked into visiting a malicious site while logged-in to the target Jenkins control server.
 
